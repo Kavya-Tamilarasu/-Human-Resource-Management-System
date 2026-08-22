@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { api } from '../../lib/api';
 
 interface NavbarProps {
@@ -23,9 +24,11 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenNotifications, onNavigate, activeTab }) => {
-  const { user, employee, logout, demoLogin, theme, toggleTheme } = useAuth();
+  const { user, employee, logout, demoLogin } = useAuth();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [demoMenuOpen, setDemoMenuOpen] = useState(false);
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [punchSummary, setPunchSummary] = useState<{ isCheckedIn: boolean; isCheckedOut: boolean } | null>(null);
 
@@ -182,14 +185,42 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNotifications, onNavigate,
         </div>
 
         {/* Theme Toggle */}
-        <button
-          id="btn-theme-toggle"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition"
-        >
-          {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
-        </button>
+        <div className="relative">
+          <button
+            id="btn-theme-toggle"
+            onClick={() => setThemeMenuOpen(!themeMenuOpen)}
+            aria-label="Toggle theme"
+            className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition"
+          >
+            {resolvedTheme === 'light' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-indigo-300" />}
+          </button>
+          
+          {themeMenuOpen && (
+            <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <button
+                onClick={() => { setTheme('light'); setThemeMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800 ${theme === 'light' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+              >
+                Light
+                {theme === 'light' && <CheckCircle2 className="w-3 h-3" />}
+              </button>
+              <button
+                onClick={() => { setTheme('dark'); setThemeMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800 ${theme === 'dark' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+              >
+                Dark
+                {theme === 'dark' && <CheckCircle2 className="w-3 h-3" />}
+              </button>
+              <button
+                onClick={() => { setTheme('system'); setThemeMenuOpen(false); }}
+                className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800 ${theme === 'system' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+              >
+                System
+                {theme === 'system' && <CheckCircle2 className="w-3 h-3" />}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Geometric Notification Bell Container */}
         <button
