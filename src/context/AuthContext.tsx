@@ -11,8 +11,6 @@ interface AuthContextType {
   demoLogin: (employeeId: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshMe: () => Promise<void>;
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
   toast: { message: string; type: 'success' | 'error' | 'info' | 'warning' } | null;
   showToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void;
 }
@@ -23,27 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
-
-  // Initialize theme from storage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('dayflow_theme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
-    localStorage.setItem('dayflow_theme', nextTheme);
-    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
-  };
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') => {
     setToast({ message, type });
@@ -135,8 +113,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         demoLogin,
         logout,
         refreshMe,
-        theme,
-        toggleTheme,
         toast,
         showToast
       }}
