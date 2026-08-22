@@ -40,6 +40,7 @@ export const EmployeeDirectoryView: React.FC<EmployeeDirectoryProps> = ({ initia
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDept, setSelectedDept] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
 
   // Selected Employee Details Modal
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
@@ -75,6 +76,8 @@ export const EmployeeDirectoryView: React.FC<EmployeeDirectoryProps> = ({ initia
       const params: any = {};
       if (searchQuery) params.search = searchQuery;
       if (selectedDept !== 'All') params.department = selectedDept;
+      if (selectedType !== 'All') params.employmentType = selectedType;
+      if (selectedStatus !== 'All') params.status = selectedStatus;
 
       const res = await api.getEmployees(params);
       setEmployees(res.employees);
@@ -87,7 +90,7 @@ export const EmployeeDirectoryView: React.FC<EmployeeDirectoryProps> = ({ initia
 
   useEffect(() => {
     loadEmployees();
-  }, [searchQuery, selectedDept]);
+  }, [searchQuery, selectedDept, selectedType, selectedStatus]);
 
   useEffect(() => {
     if (initialOpenAddModal) setAddModalOpen(true);
@@ -263,6 +266,35 @@ export const EmployeeDirectoryView: React.FC<EmployeeDirectoryProps> = ({ initia
               <option value="Finance">Finance</option>
               <option value="Customer Operations">Customer Operations</option>
               <option value="Security & Compliance">Security & Compliance</option>
+            </select>
+          </div>
+          
+          {/* Status Filter */}
+          <div>
+            <select
+              value={selectedStatus}
+              onChange={e => setSelectedStatus(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+            >
+              <option value="All">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Terminated">Terminated</option>
+            </select>
+          </div>
+
+          {/* Employment Type Filter */}
+          <div>
+            <select
+              value={selectedType}
+              onChange={e => setSelectedType(e.target.value)}
+              className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+            >
+              <option value="All">All Types</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contractor">Contractor</option>
+              <option value="Intern">Intern</option>
             </select>
           </div>
         </div>
