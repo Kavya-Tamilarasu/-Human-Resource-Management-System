@@ -1,163 +1,84 @@
-🚀 Overview
+# Human Resource Management System (HRMS)
 
-Human Resource Management System (HRMS) is a modern, responsive, and centralized platform designed to simplify everyday HR operations.
+A modern, full-stack **Human Resource Management System (HRMS)** designed to centralize employee management, attendance, leave, payroll, analytics, notifications, and administrative operations in a clean, responsive interface.
 
-Instead of managing employee information, attendance, leave, payroll, notifications, and administrative activities across multiple systems, HRMS brings everything together into one unified platform.
+## 🚀 Features
 
-🎯 Our Vision
+### 👤 Employee Management
 
-Simplify HR. Empower Employees. Improve Decisions.
+* Employee directory
+* Employee profiles
+* Profile information management
+* Employee status tracking
+* Department and role management
+* Employee dashboard
 
-HRMS helps organizations reduce manual work, improve transparency, and provide HR teams with meaningful insights through a clean and intuitive dashboard.
+### 🕐 Attendance Management
 
-💡 Why HRMS?
-Traditional HR processes often involve:
+* Daily attendance tracking
+* Check-in / check-out
+* Attendance history
+* Attendance status tracking
+* Attendance overview and statistics
 
-📄 Manual employee records
-⏱️ Time-consuming attendance tracking
-📝 Paper-based leave management
-💰 Difficult payroll monitoring
-📊 Scattered HR reports
-🔔 Missed employee notifications
-🔍 Limited visibility into organizational activities
+### 🌴 Leave Management
 
-Our Solution
+* Leave application
+* Leave status tracking
+* Leave history
+* Leave balance management
+* Administrative leave management
 
-HRMS provides a centralized digital ecosystem where employees and administrators can efficiently manage their HR activities.
+### 💰 Payroll Management
 
-Employee Data
-     ↓
-Attendance ───┐
-Leave ────────┤
-Payroll ──────┼──→ HRMS PLATFORM ──→ Analytics & Reports
-Notifications ┤
-Administration┘
+* Salary information
+* Payroll records
+* Payslip-related information
+* Payroll overview
 
-✨ Key Features
-👤 Employee Management
+### 📊 Analytics & Reporting
 
-Manage employee information efficiently from a centralized employee directory.
+* HR analytics dashboard
+* Employee statistics
+* Attendance insights
+* Payroll insights
+* Management-oriented reporting
 
-📋 Employee directory
-👤 Employee profiles
-📝 Profile information management
-🟢 Employee status tracking
-🏢 Department management
-💼 Role information
-📊 Employee dashboard
-🕐 Attendance Management
+### 🔐 Authentication & Access
 
-Track employee attendance and working hours with ease.
+* Authentication flow
+* Role-aware application structure
+* Protected application areas
+* Employee and Admin-oriented views
 
-✅ Daily attendance tracking
-🟢 Check-in / Check-out
-📅 Attendance history
-📌 Attendance status
-📊 Attendance statistics
-📈 Attendance overview
-🌴 Leave Management
+### 🔔 Notifications
 
-Simplify the complete leave request and approval process.
+* Notification drawer
+* HR-related notifications
+* Leave and employee updates
+* Centralized notification experience
 
-📝 Leave application
-⏳ Leave status tracking
-📚 Leave history
-🏖️ Leave balance
-👨‍💼 Administrator leave management
-🔔 Leave-related notifications
-💰 Payroll Management
+### 🛡️ Administration & Audit
 
-Provide centralized access to salary and payroll information.
+* Administrative dashboard
+* Employee administration
+* Audit log interface
+* System activity tracking
 
-💵 Salary information
-📄 Payroll records
-🧾 Payslip-related information
-📊 Payroll overview
-📈 Payroll insights
-📊 Analytics & Reporting
+### 🎨 User Interface
 
-Transform HR data into meaningful insights.
+* Responsive design
+* Clean HR-focused dashboard
+* Consistent navigation
+* Sidebar and top navigation
+* Reusable UI components
+* Responsive layouts for different screen sizes
 
-📈 HR analytics dashboard
-👥 Employee statistics
-🕐 Attendance insights
-💰 Payroll insights
-📊 Management-oriented reports
-📉 Data-driven decision support
-🔐 Authentication & Access Control
+---
 
-Designed with a role-aware application structure.
+## 🏗️ Project Structure
 
-🔑 Authentication flow
-🛡️ Protected application areas
-👨‍💼 Admin-oriented views
-👨‍💻 Employee-oriented views
-🔒 Secure environment configuration
-🔔 Smart Notifications
-
-Keep employees and administrators informed.
-
-🔔 Centralized notification drawer
-🌴 Leave updates
-👤 Employee updates
-📢 HR-related notifications
-⚡ Real-time-ready notification architecture
-🛡️ Administration & Audit
-
-Improve visibility and accountability across the system.
-
-👨‍💼 Administrative dashboard
-👥 Employee administration
-📋 Audit log interface
-🔍 System activity tracking
-📊 Administrative insights
-🎨 User Experience
-
-HRMS focuses on delivering a clean and professional user experience.
-
-UI Highlights
-📱 Responsive design
-🎨 Modern HR-focused dashboard
-🧭 Sidebar navigation
-🔝 Top navigation
-🧩 Reusable UI components
-💻 Desktop-friendly layouts
-📱 Mobile-responsive layouts
-⚡ Fast and smooth interactions
-
-
-🏗️ System Architecture
-
-                    ┌──────────────────────┐
-                    │       HRMS UI        │
-                    │   React + TypeScript │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │     API / Server     │
-                    │       Node.js        │
-                    └──────────┬───────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-              ▼                ▼                ▼
-        ┌──────────┐     ┌──────────┐     ┌──────────┐
-        │ Employee │     │Attendance│     │  Leave   │
-        │ Management│    │Management│     │Management│
-        └──────────┘     └──────────┘     └──────────┘
-              │                │                │
-              └────────────────┼────────────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                ▼
-        ┌──────────┐     ┌──────────┐     ┌──────────┐
-        │ Payroll  │     │Analytics │     │  Audit   │
-        │Management│     │Reporting │     │   Logs   │
-        └──────────┘     └──────────┘     └──────────┘
-        
-📂 Project Structure
-
+```text
 Human-Resource-Management-System/
 │
 ├── assets/
@@ -200,209 +121,262 @@ Human-Resource-Management-System/
 ├── tsconfig.json
 ├── vite.config.ts
 └── bun.lock
+```
 
-🛠️ Technology Stack
-Layer	Technologies
-🎨 Frontend-React, TypeScript, CSS
-⚡ Build - Tool	Vite
-🖥️ Backend - Node.js
-🔗 API - Server-side API architecture
-📦 Package - Manager	Bun / npm
-💻 Development -	VS Code
-🔀 Version - Control	Git
-☁️ Collaboration	- GitHub
-⚙️ Getting - Started
+---
 
-1️⃣ Clone the Repository
+## 🛠️ Technology Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* CSS
+
+### Backend
+
+* Node.js
+* Server-side API architecture
+
+### Development Tools
+
+* Git
+* GitHub
+* Bun / npm
+* VS Code
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/Kavya-Tamilarasu/-Human-Resource-Management-System.git
-2️⃣ Navigate to the Project
+```
+
+### 2. Navigate to the Project
+
+```bash
 cd -Human-Resource-Management-System
-3️⃣ Install Dependencies
-Using Bun
+```
+
+### 3. Install Dependencies
+
+Using **Bun**:
+
+```bash
 bun install
-Using npm
+```
+
+Or using **npm**:
+
+```bash
 npm install
-4️⃣ Configure Environment Variables
+```
 
-Create a .env file using the provided example:
+### 4. Configure Environment Variables
 
+Create a `.env` file based on `.env.example`:
+
+```bash
 copy .env.example .env
+```
 
-⚠️ Never commit .env to GitHub.
-Store only example keys and configuration names in .env.example.
+Add the required environment variables to `.env`.
 
-5️⃣ Start the Development Server
-Using Bun
+> ⚠️ Never commit `.env` or any sensitive credentials to GitHub.
+
+### 5. Start the Development Server
+
+Using Bun:
+
+```bash
 bun run dev
-Using npm
+```
+
+Or using npm:
+
+```bash
 npm run dev
+```
 
 The application will be available at the local development URL displayed in the terminal.
 
-🔄 GitHub Collaboration Workflow
+---
 
-This project is developed collaboratively by 4 team members using a single main branch.
+## 🔄 Development Workflow
 
-Before starting work
+This project is developed collaboratively by a **4-member development team** using the same GitHub repository and `main` branch.
+
+### Before Starting Work
+
+Always pull the latest changes:
+
+```bash
 git pull --rebase origin main
-After completing your task
+```
+
+### After Completing a Task
+
+Check your changes:
+
+```bash
 git status
+```
+
+Stage only the required files:
+
+```bash
 git add <your-files>
+```
+
+Commit your changes:
+
+```bash
 git commit -m "feat: describe your change"
+```
+
+Push to the repository:
+
+```bash
 git push origin main
+```
 
-⚠️ Important Rules
-🔄 Always pull the latest main before starting work.
-🎯 Work only on your assigned modules whenever possible.
-📁 Stage only files related to your task.
-🚫 Never use git push --force on main.
-🤝 Never overwrite another member's changes.
-🛠️ Resolve merge conflicts carefully.
-💬 Keep commit messages meaningful.
-🧪 Test your changes locally before pushing.
-🔐 Never commit passwords, API keys, or secrets.
-👥 Team Responsibilities
-Member	Responsibility
+---
 
-👨‍💻 Member 1	Core application, context, libraries, types, integration & configuration
-👩‍💻 Member 2	Employee Management
-👨‍💻 Member 3	Attendance & Leave Management
-👩‍💻 Member 4	Administration, Payroll & Analytics
+## 👥 Team Responsibilities
 
-One Repository • One Main Branch • Four Contributors • One Goal 🚀
+| Member       | Responsibility                                                           |
+| ------------ | ------------------------------------------------------------------------ |
+| **Member 1** | Core application, context, libraries, types, integration & configuration |
+| **Member 2** | Employee management                                                      |
+| **Member 3** | Attendance & leave management                                            |
+| **Member 4** | Administration, payroll & analytics                                      |
 
-🔒 Security
+---
 
-Security is an important part of the application architecture.
+## 🤝 Collaboration Rules
 
-Environment Variables
+1. Always pull the latest `main` before starting work.
+2. Work only on assigned modules whenever possible.
+3. Stage only files related to your task.
+4. Never use `git push --force` on `main`.
+5. Never overwrite another team member's changes.
+6. Resolve merge conflicts before pushing.
+7. Keep commits small and meaningful.
+8. Test changes locally before pushing.
+9. Communicate with team members before modifying shared files.
+10. Maintain clean and readable code.
 
-Sensitive information should never be committed to GitHub.
+---
+
+## 🔒 Security
+
+Sensitive credentials and configuration values must **never** be committed to the repository.
 
 Use:
 
+```text
 .env
+```
 
 for local secrets.
 
 Use:
 
+```text
 .env.example
+```
 
-for documenting required environment variables.
+for documenting required environment variables without exposing their actual values.
 
-Never commit
-❌ Passwords
-❌ API keys
-❌ Access tokens
-❌ Database credentials
-❌ Private secrets
-🎯 Project Goals
+Ensure `.env` remains listed in `.gitignore`.
 
-HRMS aims to:
+---
 
-👥 Centralize employee information
-🕐 Digitize attendance tracking
-🌴 Simplify leave management
-💰 Organize payroll information
-📊 Provide meaningful HR analytics
-🔔 Improve HR communication
-🛡️ Monitor administrative activities
-⚡ Reduce manual HR operations
-📈 Support data-driven decision making
-😊 Improve the overall employee experience
-🧪 Development Principles
-📱 Responsive UI
+## 🎯 Project Goals
 
-Designed to work across different screen sizes.
+The HRMS aims to provide a centralized platform for:
 
-🧩 Reusable Components
+* Managing employee information
+* Tracking employee attendance
+* Managing leave requests
+* Handling payroll information
+* Monitoring HR activities
+* Providing useful HR analytics
+* Improving administrative efficiency
+* Centralizing HR-related notifications
+* Providing a responsive and user-friendly HR experience
 
-Reusable components reduce code duplication and improve maintainability.
+---
 
-🔷 Type Safety
+## 🧪 Development Principles
 
-TypeScript helps catch errors early and improves code reliability.
+### Responsive UI
 
-✅ Input Validation
+The application should remain usable across desktops, tablets, and mobile devices.
+
+### Reusable Components
+
+Common UI elements and functionality should be implemented as reusable components to minimize duplication.
+
+### Type Safety
+
+TypeScript is used to improve code reliability and reduce runtime errors.
+
+### Input Validation
 
 User-provided information should be validated before processing.
 
-🏗️ Modular Architecture
+### Modular Architecture
 
-Each HR functionality is organized into independent modules.
+HR functionalities are organized into independent modules for easier maintenance and development.
 
-🔀 Version Control
+### Version Control
 
-Git and GitHub enable effective collaborative development.
+Git and GitHub are used to support collaborative development and maintain project history.
 
-🔧 Maintainability
+### Maintainability
 
-Organized components and utilities make the project easier to maintain.
+Components, utilities, and application logic should remain organized and easy to understand.
 
-📈 Scalability
+### Scalability
 
-The architecture allows additional HR modules to be added in the future.
+The architecture is designed so additional HR modules and features can be integrated in the future.
 
-🚀 Future Enhancements
+---
 
-The platform can be extended with:
+## 🔮 Future Enhancements
 
-🤖 AI-powered HR insights
-📧 Automated email notifications
-📱 Mobile application
-🧠 AI-based employee analytics
-💳 Automated payroll processing
-📅 Calendar integration
-📄 Automated payslip generation
-📊 Advanced BI dashboards
-🔐 Multi-factor authentication
-☁️ Cloud deployment
-🔔 Real-time push notifications
-🏆 Hackathon Impact
-Problem
+Potential future improvements include:
 
-Organizations often struggle with fragmented HR processes, manual operations, limited visibility, and inefficient employee communication.
+* Real-time attendance synchronization
+* Automated payroll calculation
+* PDF payslip generation
+* Email notifications
+* Advanced role-based access control
+* Employee self-service portal
+* Performance management
+* Recruitment management
+* Expense management
+* Advanced HR reports
+* Cloud deployment
+* Database-backed persistent storage
+* Mobile application support
+* AI-powered HR analytics and insights
 
-Solution
+---
 
-HRMS unifies these operations into a single digital platform, enabling employees and administrators to access essential HR services from one place.
+## 👥 Team
 
-Impact
-Manual Processes
-       ↓
-   HRMS Platform
-       ↓
-Automation + Centralization
-       ↓
-Better Efficiency
-       ↓
-Data-Driven Decisions
-       ↓
-Improved Employee Experience
-👥 Team
-Human Resource Management System — OODO Hackathon
+**Human Resource Management System — OODO Hackathon**
 
-Built with ❤️ by a 4-member development team.
+Developed collaboratively by a **4-member development team**.
 
-┌─────────────────────────────────────┐
-│             HRMS TEAM               │
-├─────────────────────────────────────┤
-│  👨‍💻 Member 1                       │
-│  👩‍💻 Member 2                       │
-│  👨‍💻 Member 3                       │
-│  👩‍💻 Member 4                       │
-└─────────────────────────────────────┘
+---
 
-📄 License
+## 📄 License
 
-This project is developed for educational and hackathon purposes.
-
-<p align="center">
-🚀 Human Resource Management System
-
-Centralize • Automate • Analyze • Empower
-
-⭐ If you like this project, consider giving the repository a star!
-
-</p>
+This project is developed for **educational and hackathon purposes**.
