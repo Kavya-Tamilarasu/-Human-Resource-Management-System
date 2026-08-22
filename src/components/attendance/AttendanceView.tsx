@@ -28,6 +28,12 @@ export const AttendanceView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [todaySummary, setTodaySummary] = useState<any>(null);
   const [punchLoading, setPunchLoading] = useState(false);
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Filters
   const [selectedEmployee, setSelectedEmployee] = useState<string>('All');
@@ -173,6 +179,9 @@ export const AttendanceView: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Automated punch clock, duration calculations, and historical records
           </p>
+          <div className="mt-2 text-xl font-mono font-bold text-indigo-600 dark:text-indigo-400">
+            {currentTime.toLocaleTimeString()}
+          </div>
         </div>
 
         {/* Action Controls */}
