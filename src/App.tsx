@@ -15,6 +15,7 @@ import { AnalyticsView } from './components/analytics/AnalyticsView';
 import { AuditLogsView } from './components/audit/AuditLogsView';
 import { ProfileView } from './components/profile/ProfileView';
 import { NotificationDrawer } from './components/notifications/NotificationDrawer';
+import { AIHRAssistant } from './components/ai/AIHRAssistant';
 
 const MainAppContent: React.FC = () => {
   const { user, loading } = useAuth();
@@ -98,6 +99,9 @@ const MainAppContent: React.FC = () => {
         onClose={() => setNotificationsOpen(false)}
         onSelectAction={handleNavigate}
       />
+
+      {/* AI HR Assistant */}
+      {user && <AIHRAssistant onNavigate={handleNavigate} />}
 
       {/* Main Workspace Layout */}
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
