@@ -156,6 +156,14 @@ app.get('/api/employees', authMiddleware, (req, res) => {
     query += ' AND department = ?';
     params.push(req.query.department);
   }
+  if (req.query.status) {
+    query += ' AND status = ?';
+    params.push(req.query.status);
+  }
+  if (req.query.employmentType) {
+    query += ' AND employmentType = ?';
+    params.push(req.query.employmentType);
+  }
   if (req.query.search) {
     query += ' AND (name LIKE ? OR employeeId LIKE ? OR email LIKE ?)';
     const searchParam = `%${req.query.search}%`;
@@ -358,6 +366,22 @@ app.post('/api/leaves', authMiddleware, (req, res) => {
     const data = applyLeaveSchema.parse(req.body);
     const user = (req as any).user;
     const employee = (req as any).employee;
+
+    // Overlap validation
+    const overlapping = db.prepare(`
+      SELECT * FROM leave_requests 
+      WHERE employeeId = ? AND status != 'Rejected'
+      AND (
+        (startDate <= ? AND endDate >= ?) OR
+        (startDate <= ? AND endDate >= ?) OR
+        (startDate >= ? AND endDate <= ?)
+      )
+    `).all(user.employeeId, data.endDate, data.startDate, data.startDate, data.startDate, data.startDate, data.endDate);
+
+    if (overlapping && overlapping.length > 0) {
+      return res.status(400).json({ error: 'Leave request overlaps with an existing pending or approved leave.' });
+    }
+
     const id = 'leave_' + Date.now();
     
     db.prepare(`
@@ -438,11 +462,59 @@ app.put('/api/payroll/salary-structure/:employeeId', authMiddleware, roleMiddlew
 
 // --- Analytics Routes ---
 app.get('/api/analytics', authMiddleware, (req, res) => {
+  const today = new Date().toISOString().split('T')[0];
+  const thisMonth = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  const employeesCount = db.prepare('SELECT COUNT(*) as c FROM employees').get() as {c: number};
+  const totalEmployees = employeesCount.c;
+
+  const attendanceRows = db.prepare('SELECT status, COUNT(*) as c FROM attendance WHERE date = ? GROUP BY status').all(today) as {status: string, c: number}[];
+  let presentToday = 0;
+  let absentToday = 0;
+  let onLeaveToday = 0;
+  attendanceRows.forEach(r => {
+    if (r.status === 'Present') presentToday = r.c;
+    if (r.status === 'Absent') absentToday = r.c;
+    if (r.status === 'On Leave') onLeaveToday = r.c;
+  });
+
+  const attendanceRate = totalEmployees > 0 ? Math.round((presentToday / totalEmployees) * 100) : 0;
+
+  const pendingLeavesRow = db.prepare('SELECT COUNT(*) as c FROM leave_requests WHERE status = ?').get('Pending') as {c: number};
+  const pendingLeaves = pendingLeavesRow.c;
+
+  const payrollRow = db.prepare('SELECT SUM(netSalary) as total FROM payslips WHERE month = ?').get(thisMonth) as {total: number | null};
+  const monthlyPayrollTotal = payrollRow.total || 0;
+
+  const deptBreakdown = db.prepare(`
+    SELECT department, COUNT(*) as count, SUM(salary_basicSalary + salary_hra + salary_allowances) as budget 
+    FROM employees 
+    GROUP BY department
+  `).all() as {department: string, count: number, budget: number}[];
+
+  const attendanceTrends = db.prepare(`
+    SELECT date, 
+      SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) as present,
+      SUM(CASE WHEN status='Absent' THEN 1 ELSE 0 END) as absent,
+      SUM(CASE WHEN status='Half-day' THEN 1 ELSE 0 END) as halfDay,
+      SUM(CASE WHEN status='On Leave' THEN 1 ELSE 0 END) as onLeave
+    FROM attendance 
+    GROUP BY date 
+    ORDER BY date DESC LIMIT 7
+  `).all() as any[];
+
   res.json({
-    employees: { total: 0, newThisMonth: 0, turnoverRate: 0, byDepartment: [] },
-    attendance: { averageDaily: 0, onTimeRate: 0, absentRate: 0, trends: [] },
-    payroll: { totalMonthly: 0, ytdSpend: 0, byDepartment: [] },
-    leaves: { totalPending: 0, approvedThisMonth: 0, upcoming: [] }
+    totalEmployees,
+    presentToday,
+    absentToday,
+    onLeaveToday,
+    attendanceRate,
+    pendingLeaves,
+    monthlyPayrollTotal,
+    departmentBreakdown: deptBreakdown,
+    attendanceTrends: attendanceTrends.reverse(),
+    leaveUtilization: [],
+    genderBreakdown: []
   });
 });
 
