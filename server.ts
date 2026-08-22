@@ -1,5 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
+import { GoogleGenAI, Type, Schema } from '@google/genai';
 import jwt from 'jsonwebtoken';
 import { createServer as createViteServer } from 'vite';
 import { db, initDb, hashPassword } from './database/db';
@@ -549,6 +551,131 @@ app.get('/api/audit-logs', authMiddleware, roleMiddleware(['admin']), (req, res)
 // --- Documents Routes ---
 app.post('/api/documents/upload', authMiddleware, (req, res) => {
   res.json({ message: 'Document uploaded' });
+});
+
+// --- AI Chatbot Route ---
+app.post('/api/chat', authMiddleware, async (req, res) => {
+  try {
+    const { message } = req.body;
+    const user = (req as any).user;
+    const employee = (req as any).employee;
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(503).json({ error: 'AI service is currently unavailable (Missing API Key).' });
+    }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    
+    // Define the intent schema
+    const intentSchema: Schema = {
+      type: Type.OBJECT,
+      properties: {
+        intent: {
+          type: Type.STRING,
+          description: "The identified intent of the user. Must be one of: MY_ATTENDANCE, MY_LEAVE_BALANCE, LEAVE_REQUESTS, MY_PAYSLIP, EMPLOYEE_COUNT, EMPLOYEE_SEARCH, ANALYTICS, UNKNOWN",
+          enum: ["MY_ATTENDANCE", "MY_LEAVE_BALANCE", "LEAVE_REQUESTS", "MY_PAYSLIP", "EMPLOYEE_COUNT", "EMPLOYEE_SEARCH", "ANALYTICS", "UNKNOWN"]
+        },
+        confidence: {
+          type: Type.NUMBER,
+          description: "Confidence score between 0.0 and 1.0"
+        }
+      },
+      required: ["intent", "confidence"]
+    };
+
+    const prompt = `
+      You are an HR intent classifier.
+      User message: "${message}"
+      Classify the intent based on these rules:
+      - Asking about their own attendance -> MY_ATTENDANCE
+      - Asking about their leave balance -> MY_LEAVE_BALANCE
+      - Asking about their leave requests -> LEAVE_REQUESTS
+      - Asking about their payslip -> MY_PAYSLIP
+      - Asking how many employees exist -> EMPLOYEE_COUNT
+      - Asking to find an employee or show employees -> EMPLOYEE_SEARCH
+      - Asking for HR analytics/stats -> ANALYTICS
+      - Anything else -> UNKNOWN
+      Return ONLY valid JSON matching the schema.
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: intentSchema,
+        temperature: 0.1
+      }
+    });
+
+    const result = JSON.parse(response.text || '{}');
+    const intent = result.intent;
+
+    // Execute logic based on intent & role
+    let answer = "I'm sorry, I couldn't understand your request or don't have that information.";
+    let actionType = undefined;
+
+    if (intent === 'MY_ATTENDANCE') {
+      const records = db.prepare('SELECT * FROM attendance WHERE employeeId = ? ORDER BY date DESC LIMIT 30').all(user.employeeId) as any[];
+      const present = records.filter(r => r.status === 'Present').length;
+      const absent = records.filter(r => r.status === 'Absent').length;
+      answer = `You have been present for **${present} days** and absent for **${absent} days** in your recent records.`;
+      actionType = 'attendance';
+    } 
+    else if (intent === 'MY_LEAVE_BALANCE') {
+      const balance = db.prepare('SELECT * FROM leave_balances WHERE employeeId = ?').get(user.employeeId) as any;
+      if (balance) {
+        const remaining = balance.paidTotal - balance.paidUsed;
+        answer = `You have **${remaining} paid leave days** remaining (out of ${balance.paidTotal}).`;
+      } else {
+        answer = "I couldn't find your leave balance records.";
+      }
+      actionType = 'leaves';
+    }
+    else if (intent === 'LEAVE_REQUESTS') {
+      const leaves = db.prepare('SELECT * FROM leave_requests WHERE employeeId = ? ORDER BY appliedAt DESC LIMIT 3').all(user.employeeId) as any[];
+      if (leaves.length > 0) {
+        answer = "Here are your recent leave requests:\n" + leaves.map(l => `- ${l.startDate} to ${l.endDate}: **${l.status}**`).join('\n');
+      } else {
+        answer = "You have no recent leave requests.";
+      }
+      actionType = 'leaves';
+    }
+    else if (intent === 'MY_PAYSLIP') {
+      const slip = db.prepare('SELECT * FROM payslips WHERE employeeId = ? ORDER BY month DESC LIMIT 1').get(user.employeeId) as any;
+      if (slip) {
+        answer = `Your latest payslip is for **${slip.month}**. Net pay: **$${slip.netSalary.toLocaleString()}**.`;
+      } else {
+        answer = "I couldn't find any recent payslips for you.";
+      }
+      actionType = 'payroll';
+    }
+    else if (intent === 'EMPLOYEE_COUNT') {
+      if (user.role === 'admin' || user.role === 'hr') {
+        const count = db.prepare('SELECT COUNT(*) as c FROM employees').get() as {c: number};
+        answer = `There are currently **${count.c} employees** in the organization.`;
+      } else {
+        answer = "I'm sorry, you don't have permission to access organization-wide employee statistics.";
+      }
+      actionType = 'employees';
+    }
+    else if (intent === 'ANALYTICS') {
+      if (user.role === 'admin' || user.role === 'hr') {
+        answer = "I can help you view detailed analytics. Please visit the Analytics dashboard for interactive charts on attendance, payroll, and employee distribution.";
+      } else {
+        answer = "I'm sorry, you don't have permission to access HR analytics.";
+      }
+      actionType = 'analytics';
+    }
+    else if (intent === 'UNKNOWN') {
+      answer = "I can help you with attendance, leaves, payroll, and basic HR information. Could you rephrase your question?";
+    }
+
+    res.json({ answer, actionType });
+  } catch (error) {
+    console.error('Chatbot error:', error);
+    res.status(500).json({ error: 'Failed to process chat request.' });
+  }
 });
 
 async function startServer() {
