@@ -251,6 +251,14 @@ export const api = {
     return request<{ total: number; logs: AuditLog[] }>(`/api/audit-logs?${query.toString()}`);
   },
 
+  // AI Assistant
+  async askAIAssistant(message: string) {
+    return request<{ answer: string; actionType?: string }>('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ message })
+    });
+  },
+
   // Documents
   async uploadDocument(data: { employeeId?: string; title: string; category: string; fileSize?: string }) {
     return request<any>('/api/documents/upload', {
